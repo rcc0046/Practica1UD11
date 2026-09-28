@@ -1,0 +1,53 @@
+services:
+  # Servidor Web (Nginx)
+  web:
+    image: nginx:alpine
+    container_name: web_server
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    volumes:
+      - ./src:/var/www/html:ro
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - php
+    networks:
+      - app-network
+
+  # Intérprete PHP 8.3 (PHP-FPM)
+  php:
+    build:
+      context: ./php
+      dockerfile: Dockerfile
+    container_name: php_app
+    restart: unless-stopped
+    volumes:
+      - ./src:/var/www/html
+    depends_on:
+      - db
+    networks:
+      - app-network
+
+  # Base de Datos (MySQL)
+  db:
+    image: mysql:8.0
+    container_name: mysql_db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: dwes_db
+      MYSQL_USER: dwes_user
+      MYSQL_PASSWORD: dwes_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - app-network
+
+volumes:
+  db_data:
+
+networks:
+  app-network:
+    driver: bridge
