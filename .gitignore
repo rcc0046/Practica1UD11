@@ -1,0 +1,15 @@
+# Entorno y logs
+.env
+*.log
+
+# Docker / Bases de datos persistentes locales si no usan volumen con nombre
+*.sql
+*.sqlite
+
+# IDEs y editores
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+.DS_Store
+Thumbs.db
